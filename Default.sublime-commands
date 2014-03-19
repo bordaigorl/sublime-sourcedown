@@ -1,0 +1,14 @@
+[
+
+    {
+        "caption": "SourceDown: Generate Markdown from this sourcecode",
+        "command": "source_down",
+        "args": {"target": "new"}
+    },
+    {
+        "caption": "SourceDown: Copy Markdown from this sourcecode",
+        "command": "source_down",
+        "args": {"target": "clipboard"}
+    }
+
+]
