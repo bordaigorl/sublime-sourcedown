@@ -169,6 +169,21 @@ class LineComment(CommentRegion):
                 break
         self.delim_end = ""
 
+    def strip_delim(self, text):
+        for d in self.delim:
+            pos = text.find(d)
+            if pos >= 0:
+                # print("stripped '%s' '%s'" % (d,text[pos+len(d):]))
+                return text[pos+len(d):]
+        return text
+
+    def contents(self):
+        split = self._view.split_by_newlines(self._region)
+        if len(split) == 1:
+            return self._view.substr(Region(self.contents_begin(), self.contents_end()))
+        else:
+            return '\n'.join([self.strip_delim(self._view.substr(r)) for r in split])
+
     def is_block(self):
         return False
 
@@ -270,7 +285,7 @@ class SourceDownCommand(sublime_plugin.TextCommand):
             if clc == True or clc == "all":
                 return False
             if clc == "lonely":
-                return r.prefix().size() == 0
+                return r.prefix().size() > 0
             return False
 
     def partition_text(self, r1, r2):
@@ -308,29 +323,30 @@ class SourceDownCommand(sublime_plugin.TextCommand):
             r.append(Region(prev_end, size))
         return r
 
-
     def run(self, edit, target="new", **options):
         self.update_options(options)
         view = self.view
         tab_size = int(view.settings().get('tab_size', 8))
 
         blocks = view.find_by_selector("comment.block")
-        lines  = view.find_by_selector("comment.line")
+        lines = view.find_by_selector("comment.line")
         # rest is code
         blocks = [BlockComment(view, b) for b in blocks]
-        lines  = [LineComment(view, l)  for l in lines ]
+        lines = [LineComment(view, l) for l in lines]
 
         regions = self.partition_text(lines, blocks)
 
         result = ""
         for r in regions:
             if is_comment(r):
-                txt = r.contents().strip("\n")
+                contents = r.contents()
+                txt = contents.strip("\n")
                 if txt.strip() == "":
                     continue
                 if self.options["deindent_comments"]:
                     if self.options["guess_comments_indent_from_first_line"] and \
-                       self.view.substr(r.contents_begin()) != '\n':
+                       r.is_block() and \
+                       not contents.startswith('\n'):
                         guess = r.prefix().size() + len(r.delim_start)
                         txt = (' '*guess) + txt
                     txt = deindent(txt)
