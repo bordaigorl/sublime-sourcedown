@@ -324,9 +324,10 @@ class SourceDownCommand(sublime_plugin.TextCommand):
         return r
 
     def run(self, edit, target="new", **options):
-        self.update_options(options)
         view = self.view
-        tab_size = int(view.settings().get('tab_size', 8))
+        sublime.status_message("Generating Markdown version.")
+        self.update_options(options)
+        # tab_size = int(view.settings().get('tab_size', 8))
 
         blocks = view.find_by_selector("comment.block")
         lines = view.find_by_selector("comment.line")
@@ -335,6 +336,7 @@ class SourceDownCommand(sublime_plugin.TextCommand):
         lines = [LineComment(view, l) for l in lines]
 
         regions = self.partition_text(lines, blocks)
+        sublime.status_message("Generating Markdown version..")
 
         result = ""
         for r in regions:
@@ -353,7 +355,9 @@ class SourceDownCommand(sublime_plugin.TextCommand):
                 result += "\n%s\n" % txt
             else:
                 result += self.wrap_code(r)
+        sublime.status_message("Generating Markdown version...")
 
+        # OUTPUT ###################
         syntax = view.settings().get("md_syntax", find_syntax("Markdown"))
         if target == "new":
             newview = self.view.window().new_file()
@@ -365,16 +369,17 @@ class SourceDownCommand(sublime_plugin.TextCommand):
             newview.set_name(name+'.'+self.options["extension"])
             append_to_view(newview, result)
             newview.set_syntax_file(syntax)
+            sublime.status_message("Markdown version successfully generated!")
         elif target == "clipboard":
             sublime.set_clipboard(result)
-            sublime.set_status("SourceDown: Markdown copied to clipboard")
+            sublime.status_message("Markdown version copied to clipboard")
         elif target == "replace":
             # TODO: Handle multiple sel
             view.replace(edit, Region(0, view.size()), result)
             view.set_syntax_file(syntax)
+            sublime.status_message("Markdown version successfully replaced!")
         else:
-            sublime.set_status("SourceDown: Unknown target!")
-        pass
+            sublime.status_message("SourceDown: Unknown target!")
 
 
 class SourceUpCommand(sublime_plugin.TextCommand):
