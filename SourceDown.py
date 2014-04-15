@@ -38,9 +38,9 @@ def find_syntax(lang, default=None):
 # TODO: replace with textwrap.dedent?
 INDENT = re.compile(r'^\s*', re.M)
 
-def deindent(txt, base=None):
+def deindent(txt):
     # strip = min([len(m) for m in INDENT.findall(txt)])
-    strip = base
+    strip = None
     for m in INDENT.findall(txt):
         l = len(m)
         if l <= (strip or l):
@@ -267,7 +267,6 @@ class SourceDownCommand(sublime_plugin.TextCommand):
             return not self.options["convert_block_comments"]
         else:
             clc = self.options["convert_line_comments"]
-            # print(clc, self.view.substr(r))
             if clc == True or clc == "all":
                 return False
             if clc == "lonely":
@@ -330,10 +329,11 @@ class SourceDownCommand(sublime_plugin.TextCommand):
                 if txt.strip() == "":
                     continue
                 if self.options["deindent_comments"]:
-                    guess = None
-                    if self.options["guess_comments_indent_from_first_line"]:
-                        guess = r.prefix().size()
-                    txt = deindent(txt, guess)
+                    if self.options["guess_comments_indent_from_first_line"] and \
+                       self.view.substr(r.contents_begin()) != '\n':
+                        guess = r.prefix().size() + len(r.delim_start)
+                        txt = (' '*guess) + txt
+                    txt = deindent(txt)
                 result += "\n%s\n" % txt
             else:
                 result += self.wrap_code(r)
