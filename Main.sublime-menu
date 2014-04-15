@@ -1,0 +1,44 @@
+[
+    {
+        "caption": "Preferences",
+        "mnemonic": "n",
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "mnemonic": "P",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "Source Down",
+                        "children":
+                        [
+                            {
+                                "command": "open_file",
+                                "args": {"file": "${packages}/SourceDown/README.md"},
+                                "caption": "README"
+                            },
+                            // {
+                            //     "command": "open_url",
+                            //     "args": {"url": "https://github.com/bordaigorl/sublime-evernote/wiki"},
+                            //     "caption": "Wiki"
+                            // },
+                            { "caption": "-" },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/User/SourceDown.sublime-settings",
+                                    // generate the following using window.run_command("source_down_settings")
+                                    "contents": "{\n    \"fenced\": ${1:true},\n    \"ignore_line_comments\": ${2:false},\n    \"ignore_block_comments\": ${3:false},\n    \"ignore_code\": ${4:false},\n    \"deindent_code\": ${5:true},\n    \"ignore_comments_beyond_level\": ${6:1},\n    \"respect_indent_in_comment_blocks\": ${7:true},\n    \"extension\": ${8:\"md\"}$0\n}"
+                                },
+                                "caption": "Settings – User"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
