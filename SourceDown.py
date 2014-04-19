@@ -166,11 +166,11 @@ class CommentRegion(sublime.Region):
         return self._view.substr(Region(self.contents_begin(), self.contents_end()))
 
 
-def min_pos(delim, text, from=0):
+def min_pos(delim, text, beg=0):
     min_pos = None
     min_delim = ""
     for d in delim:
-        pos = text.find(d, from)
+        pos = text.find(d, beg)
         if pos < 0: continue
         if min_pos is None or pos < min_pos:
             min_pos = pos
