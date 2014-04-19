@@ -51,6 +51,7 @@ def language_name(scope):
             return LANG_CODES.get(s, s.split('.')[1])
     return ""
 
+
 # This helper function finds out which is the most likely syntax definition file associated to a language name
 def find_syntax(lang, default=None):
     res = sublime.find_resources("%s.*Language" % lang)
@@ -228,6 +229,7 @@ class BlockComment(CommentRegion):
     def is_block(self):
         return True
 
+
 # An helper function checking whether a region is a comment region of some sort:
 def is_comment(region):
     return (
@@ -272,14 +274,10 @@ class SourceDownCommand(sublime_plugin.TextCommand):
         self.options = options
 
     # Wrap the content of a region so that it represents raw code in markdown
-    def wrap_code(self, r):
-        txt = self.view.substr(r).strip('\n')
-        if txt.strip() == "":
-            return ""
+    def wrap_code(self, txt, lang):
         if self.options["deindent_code"]:
             txt = deindent(txt)
         if self.options["fenced"]:
-            lang = language_name(self.view.scope_name(r.begin()))
             ticks = 3
             while txt.find('\n'+('`'*ticks)+'\n') > 0:
                 ticks += 1
@@ -360,11 +358,13 @@ class SourceDownCommand(sublime_plugin.TextCommand):
         sublime.status_message("Generating Markdown version..")
 
         result = ""
+        prev_empty = True
         for r in regions:
             if is_comment(r):
                 contents = r.contents()
                 txt = contents.strip("\n")
                 if txt.strip() == "":
+                    result += "\n"
                     continue
                 if self.options["deindent_comments"]:
                     if self.options["guess_comments_indent_from_first_line"] and \
@@ -373,9 +373,20 @@ class SourceDownCommand(sublime_plugin.TextCommand):
                         guess = r.prefix().size() + len(r.delim_start)
                         txt = (' '*guess) + txt
                     txt = deindent(txt)
-                result += "\n%s\n" % txt
+                if prev_empty:
+                    result += "%s\n" % txt
+                else:
+                    result += "\n%s\n" % txt
+                prev_empty = False
             else:
-                result += self.wrap_code(r)
+                txt = self.view.substr(r)
+                prev_empty = False
+                if txt.strip(' \t') == "":
+                    prev_empty = True
+                    continue
+                elif txt.strip() == "":
+                    continue
+                result += self.wrap_code(txt.strip('\n'), language_name(view.scope_name(r.begin())))
         sublime.status_message("Generating Markdown version...")
 
         # - - -
