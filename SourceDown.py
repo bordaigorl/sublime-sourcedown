@@ -165,21 +165,26 @@ class CommentRegion(sublime.Region):
         return self._view.substr(Region(self.contents_begin(), self.contents_end()))
 
 
+def min_pos(delim, text, from=0):
+    min_pos = None
+    min_delim = ""
+    for d in delim:
+        pos = text.find(d, from)
+        if pos < 0: continue
+        if min_pos is None or pos < min_pos:
+            min_pos = pos
+            min_delim = d
+        if pos == 0: break
+    return (min_pos or 0, min_delim)
+
+
 #> FIXME: if multiline and first has a prefix should be split in two!
 class LineComment(CommentRegion):
 
-    #> FIXME: `### A` would infer `prefix=##` and `contents=A`
-    #  so maybe use min([(text.find(d), d) for d in delim if text.find(d) > 0], key=fst, default=None)
     def __init__(self, view, region):
         super(LineComment, self).__init__(view, region)
         self.delim, _ = comment_delims(view, region)
-        text = view.substr(region)
-        for d in self.delim:
-            pos = text.find(d)
-            if pos >= 0:
-                self._comment_start = pos
-                self.delim_start = d
-                break
+        self._comment_start, self.delim_start = min_pos(self.delim, view.substr(region))
         self.delim_end = ""
 
     def strip_delim(self, text):
