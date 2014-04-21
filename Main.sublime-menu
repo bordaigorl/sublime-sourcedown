@@ -20,11 +20,11 @@
                                 "args": {"file": "${packages}/SourceDown/README.md"},
                                 "caption": "README"
                             },
-                            // {
-                            //     "command": "open_url",
-                            //     "args": {"url": "https://github.com/bordaigorl/sublime-evernote/wiki"},
-                            //     "caption": "Wiki"
-                            // },
+                            {
+                                "command": "open_url",
+                                "args": {"url": "https://github.com/bordaigorl/sublime-sourcedown/wiki"},
+                                "caption": "Wiki"
+                            },
                             { "caption": "-" },
                             {
                                 "command": "open_file",

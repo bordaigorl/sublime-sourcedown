@@ -261,7 +261,6 @@ class SourceDownCommand(sublime_plugin.TextCommand):
     # 1. defaults
     # 2. then the settings in `SourceDown.sublime-settings` (Default, then User)
     # 3. and finally from the `sourcedown` key in the project's settings.
-    #
     def update_options(self, options):
         settings = sublime.load_settings("SourceDown.sublime-settings")
         projsett = self.view.window().project_data().get("settings", {}).get("sourcedown", {})
@@ -389,7 +388,6 @@ class SourceDownCommand(sublime_plugin.TextCommand):
                 result += self.wrap_code(txt.strip('\n'), language_name(view.scope_name(r.begin())))
         sublime.status_message("Generating Markdown version...")
 
-        # - - -
         # OUTPUT
         syntax = view.settings().get("md_syntax", find_syntax("Markdown"))
         if target == "new":
