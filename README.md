@@ -75,16 +75,16 @@ Which in turn can be compiled to
 
 # Options
 
-`fenced` (default: `true`)
+#### `fenced` (default: `true`)
 
 Use the fenced GFM syntax for code snippets.
 If the snippet contains backticks than the fence will be extended until it is not ambiguous where it ends (see [Pandoc](http://johnmacfarlane.net/pandoc/README.html#fenced-code-blocks)).
 
-`ignore_code` (default: `false`)
+#### `ignore_code` (default: `false`)
 
 This only processes the comments for producing the Markdown version.
 
-`convert_line_comments` (default: `"lonely"`)
+#### `convert_line_comments` (default: `"lonely"`)
 
 Line comments are the ones starting with a marker and ending with the end of the line.
 This setting can take the values:
@@ -93,23 +93,23 @@ This setting can take the values:
  * `"none"`: all line comments will be left as comments in the raw code block they belong to;
  * `"lonely"`: only the "standalone" line comments, i.e. the ones taking the full line, will be converted.
 
-`convert_block_comments` (default: `true`)
+#### `convert_block_comments` (default: `true`)
 
 This setting controls whether the block comments (the ones with start and end delimiters)  are converted to Markdown text or left as comments in the raw code block they belong to.
 
-`keep_comments_beyond_level` (default: `2`)
+#### `keep_comments_beyond_level` (default: `2`)
 
 Comments indented at a level greater than the one indicated will be kept as comments in a raw code block.
 
-`deindent_code` (default: `false`)
+#### `deindent_code` (default: `false`)
 
 If true, the raw code blocks generated from code snippets will be deindented. 
 
-`deindent_comments` (default: `true`)
+#### `deindent_comments` (default: `true`)
 
 If true, the Markdown text extracted from comments will be deindented. 
 
-`guess_comments_indent_from_first_line` (default: `true`)
+#### `guess_comments_indent_from_first_line` (default: `true`)
 
 If true, the indentation level will take in account where the first line of a block comment starts. For example
 
@@ -128,6 +128,6 @@ gets converted to
     will be deindented to level 0
 
 
-`extension` (default: `"md"`)
+#### `extension` (default: `"md"`)
 
 This is the file extension associated to Markdown files.
